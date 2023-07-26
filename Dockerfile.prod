@@ -1,0 +1,21 @@
+# Use a imagem Alpine do Go
+FROM golang:alpine as builder
+
+# Crie e vá para o diretório de trabalho no container
+WORKDIR /app
+
+# Copie o arquivo hello.go para o diretório de trabalho no container
+COPY hello.go .
+
+# Compile o código Go para criar o executável
+RUN go build hello.go
+
+# Etapa 2: Use uma imagem mínima "scratch" para a imagem final
+FROM scratch as final
+
+# Copie o executável do estágio de compilação para a imagem final
+COPY --from=builder /app /
+
+# Comando a ser executado quando o container for iniciado
+CMD ["./hello"]
+
